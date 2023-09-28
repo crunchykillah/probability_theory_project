@@ -1,4 +1,3 @@
-import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import math.Combinations;
 import math.Permutations;
@@ -23,7 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static service.TextResources.*;
-@AllArgsConstructor
 public class MessageSender implements Runnable {
     private Message message;
     private Long who;
@@ -37,6 +35,13 @@ public class MessageSender implements Runnable {
         this.bot = bot;
         this.message = message;
         this.update = update;
+    }
+    public MessageSender(Message message, TelegramLongPollingBot bot, Update update,CallbackQuery callbackQuery) {
+        this.who = message.getChatId();
+        this.bot = bot;
+        this.message = message;
+        this.update = update;
+        this.callbackQuery = callbackQuery;
     }
 
     @SneakyThrows
