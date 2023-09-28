@@ -1,3 +1,4 @@
+import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import math.Combinations;
 import math.Permutations;
@@ -22,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static service.TextResources.*;
-
+@AllArgsConstructor
 public class MessageSender implements Runnable {
     private Message message;
     private Long who;
@@ -37,20 +38,13 @@ public class MessageSender implements Runnable {
         this.message = message;
         this.update = update;
     }
-    public MessageSender(Message message, TelegramLongPollingBot bot, Update update,CallbackQuery callbackQuery) {
-        this.who = message.getChatId();
-        this.bot = bot;
-        this.message = message;
-        this.update = update;
-        this.callbackQuery = callbackQuery;
-    }
 
     @SneakyThrows
     @Override
     public void run() {
         if (message.isCommand()) {
             handleCommandToSend(update);
-        } else if ((message.getText().matches("^\\d+$") || message.getText().matches("^\\d+\\s\\d+$") || message.getText().matches("^\\d+(\\s\\d+){2}$") || message.getText().matches("^\\d+\\s\\d+\\s\\d+\\s\\d+$")) && !(callbackQuery == null)) {
+        } else if ((message.getText().matches(REGEX_FOR_ONE_NUM) || message.getText().matches(REGEX_FOR_TWO_NUM) || message.getText().matches(REGEX_FOR_THREE_NUM) || message.getText().matches(REGEX_FOR_FOUR_NUM)) && !(callbackQuery == null)) {
             handleMessageToSend();
         } else {
             sendText(who, ERROR_MESSAGE, bot);
@@ -99,38 +93,29 @@ public class MessageSender implements Runnable {
     }
     private void handleMessageToSend() {
         String[] numbers = message.getText().split(" ");
-        if (numbers.length == 1) {
-            int n = Integer.parseInt(numbers[0]);
-            handleSingleNumber(n);
+        int length = numbers.length;
+        if (length == 0) {
             return;
         }
-        if (numbers.length == 2) {
-            int n = Integer.parseInt(numbers[0]);
-            int k = Integer.parseInt(numbers[1]);
-            handleTwoNumbers(n, k);
-            return;
-        }
-        if (numbers.length == 3) {
-            System.out.println(111);
-            int n = Integer.parseInt(numbers[0]);
-            int m = Integer.parseInt(numbers[1]);
-            int k = Integer.parseInt(numbers[2]);
-            handleThreeNumbers(n, m, k);
-            return;
-        }
-        if (numbers.length == 4) {
-            int n = Integer.parseInt(numbers[0]);
-            int m = Integer.parseInt(numbers[1]);
-            int k = Integer.parseInt(numbers[2]);
-            int r = Integer.parseInt(numbers[3]);
-            handleFourNumbers(n, m, k, r);
-            return;
-        }
-        if (numbers.length > 4) {
-            int n = Integer.parseInt(numbers[0]);
-            int[] otherNumbers = Arrays.copyOfRange(Service.stringArrayToIntArray(numbers), 1, Service.stringArrayToIntArray(numbers).length);
-            handleMoreNumbers(n, otherNumbers);
-            return;
+        int[] intNumbers = Service.stringArrayToIntArray(numbers);
+        switch (length) {
+            case 1:
+                handleSingleNumber(intNumbers[0]);
+                break;
+            case 2:
+                handleTwoNumbers(intNumbers[0], intNumbers[1]);
+                break;
+            case 3:
+                handleThreeNumbers(intNumbers[0], intNumbers[1], intNumbers[2]);
+                break;
+            case 4:
+                handleFourNumbers(intNumbers[0], intNumbers[1], intNumbers[2], intNumbers[3]);
+                break;
+            default:
+                int n = intNumbers[0];
+                int[] otherNumbers = Arrays.copyOfRange(intNumbers, 1, intNumbers.length);
+                handleMoreNumbers(n, otherNumbers);
+                break;
         }
     }
     private void handleSingleNumber(int n) {

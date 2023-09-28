@@ -30,6 +30,10 @@ public class TextResources {
     public static final String PLACEMENTS_WITH_REP = "Размещения с повторениями. Введите n и k через пробел чтобы получить ответ.";
     public static final String URN_MODEL_FIRST = "Урновая модель первого типа. Введите n, m и k (n > m, m > k) через пробел чтобы получить ответ.";
     public static final String URN_MODEL_SECOND = "Урновая модель второго типа. Введите n, m, k и r (n > m, m > k) через пробел чтобы получить ответ.";
+    public static final String REGEX_FOR_ONE_NUM = "^\\d+$";
+    public static final String REGEX_FOR_TWO_NUM = "^\\d+\\s\\d+$";
+    public static final String REGEX_FOR_THREE_NUM = "^\\d+(\\s\\d+){2}$";
+    public static final String REGEX_FOR_FOUR_NUM = "^\\d+\\s\\d+\\s\\d+\\s\\d+$";
 
     //метод создания data для callback
     public static String callbackText(int num) {
