@@ -1,9 +1,11 @@
-package type;
-import static type.Factorial.factorial;
+package math;
 
+import static math.Factorial.factorial;
+
+//размещения
 public class Placements {
-    // Метод для вычисления размещений без повторений A(n, k)
-    public static long arrangementsWithoutRepetition(int n, int k) {
+    //без повторений
+    public static long placementsWithoutRepetition(int n, int k) {
         if (k < 0 || k > n) {
             return 0;
         } else {
@@ -13,8 +15,8 @@ public class Placements {
         }
     }
 
-    // Метод для вычисления размещений с повторениями n^k
-    public static long arrangementsWithRepetition(int n, int k) {
+    //с повторениями
+    public static long placementsWithRepetition(int n, int k) {
         if (k < 0) {
             return 0;
         } else {

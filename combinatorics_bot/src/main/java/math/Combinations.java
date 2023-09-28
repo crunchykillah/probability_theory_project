@@ -1,8 +1,10 @@
-package type;
+package math;
 
-import static type.Factorial.factorial;
+import static math.Factorial.factorial;
 
+//сочетания
 public class Combinations {
+    //без повторений
     public static long combinations(int n, int k) {
         if (k < 0 || k > n) {
             return 0;
@@ -10,6 +12,7 @@ public class Combinations {
             return factorial(n) / (factorial(k) * factorial(n - k));
         }
     }
+    //с повторениями
     public static long combinationsWithRepetition(int n, int k) {
         if (k < 0 || n < 0) {
             return 0;

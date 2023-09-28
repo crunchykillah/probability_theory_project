@@ -1,4 +1,4 @@
-package type;
+package math;
 
 public class Factorial {
     public static long factorial(int n) {
