@@ -12,4 +12,6 @@ public class UrnModel {
         long combSubtraction = Combinations.combinations((n-m),(k-r));
         return (float)(combFromMToR*combSubtraction)/combFromNToK;
     }
+
+
 }

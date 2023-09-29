@@ -38,7 +38,6 @@ public class CombinatoricsBot extends TelegramLongPollingBot{
         return BOT_NAME;
     }
     @Override
-    public String getBotToken() {
-        return System.getenv("TELEGRAM_BOT_TOKEN");
-    }
+    public String getBotToken() { return System.getenv("TELEGRAM_BOT_TOKEN"); }
+
 }

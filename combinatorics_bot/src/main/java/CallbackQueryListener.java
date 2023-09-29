@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static service.InlineKeyboardServices.setKeyboardMarkupForStart;
 import static service.TextResources.*;
 
 public class CallbackQueryListener {
@@ -19,6 +20,7 @@ public class CallbackQueryListener {
         buttonMessages.put(callbackText(6), PLACEMENTS_WITH_REP);
         buttonMessages.put(callbackText(7), URN_MODEL_FIRST);
         buttonMessages.put(callbackText(8), URN_MODEL_SECOND);
+        buttonMessages.put(callbackText(9), REPLY_FORMULAS);
         return buttonMessages;
     }
     public static void onCallbackQuery(CallbackQuery callbackQuery, TelegramLongPollingBot bot) {
@@ -30,7 +32,10 @@ public class CallbackQueryListener {
             SendMessage message = SendMessage.builder()
                     .chatId(chatId)
                     .text("Вы нажали на кнопку " + messageText)
-                    .build();
+                    .build();// Обработка исключений
+            if (data.equals(callbackText(9))) {
+                message.setReplyMarkup(setKeyboardMarkupForStart());
+            }
             try {
                 bot.execute(message);
             } catch (TelegramApiException e) {

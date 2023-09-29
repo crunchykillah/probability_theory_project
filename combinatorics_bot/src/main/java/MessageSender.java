@@ -10,17 +10,16 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import service.Service;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.List;
 
+import static service.InlineKeyboardServices.setKeyboardMarkupForReply;
+import static service.InlineKeyboardServices.setKeyboardMarkupForStart;
 import static service.TextResources.*;
 public class MessageSender implements Runnable {
     private Message message;
@@ -51,17 +50,19 @@ public class MessageSender implements Runnable {
             handleCommandToSend(update);
         } else if ((message.getText().matches(REGEX_FOR_ONE_NUM) || message.getText().matches(REGEX_FOR_TWO_NUM) || message.getText().matches(REGEX_FOR_THREE_NUM) || message.getText().matches(REGEX_FOR_FOUR_NUM)) && !(callbackQuery == null)) {
             handleMessageToSend();
+        } else if (!(callbackQuery == null)) {
+            sendTextWithButton(who, ERROR_MESSAGE, bot,"reply");
         } else {
             sendText(who, ERROR_MESSAGE, bot);
         }
         System.out.println(Thread.currentThread().getId() + "," +
                 message.getText() + ", " +
-                message.getFrom().getUserName());
+                message.getFrom().getUserName() + ", " + LocalTime.now());
     }
     private void handleCommandToSend(Update update) throws MalformedURLException {
         switch (message.getText()) {
             case "/start":
-                sendTextWithButton(who, START_MESSAGE, bot);
+                sendTextWithButton(who, START_MESSAGE, bot,"start");
                 break;
             case "/formula":
                 sendPhotoToUser(update);
@@ -74,11 +75,18 @@ public class MessageSender implements Runnable {
                 break;
         }
     }
-    public void sendTextWithButton(Long who, String what, TelegramLongPollingBot bot) {
+    public void sendTextWithButton(Long who, String what, TelegramLongPollingBot bot,String type) {
         SendMessage response = new SendMessage().builder()
                 .chatId(who.toString())
                 .text(what).build();
-        response.setReplyMarkup(setKeyboardMarkup());
+        switch (type) {
+            case "start":
+                response.setReplyMarkup(setKeyboardMarkupForStart());
+                break;
+            case "reply":
+                response.setReplyMarkup(setKeyboardMarkupForReply(callbackQuery));
+                break;
+        }
         try {
             bot.execute(response);
         } catch (TelegramApiException e) {
@@ -124,74 +132,54 @@ public class MessageSender implements Runnable {
         }
     }
     private void handleSingleNumber(int n) {
-        if (callbackQuery.getData().equals("callback_data_3")) {
-            sendText(who, "Полученный ответ: " + Long.toString(Permutations.permutationsWithoutRepetition(n)), bot);
+        if (callbackQuery.getData().equals(callbackText(3))) {
+            sendTextWithButton(who, "Полученный ответ: " + Long.toString(Permutations.permutationsWithoutRepetition(n)), bot,"reply");
+        } else {
+            sendTextWithButton(who, ERROR_MESSAGE, bot, "reply");
         }
     }
 
     private void handleTwoNumbers(int n, int k) {
-        if (callbackQuery.getData().equals("callback_data_1")) {
-            sendText(who, "Полученный ответ: " + Long.toString(Combinations.combinations(n, k)), bot);
-        } else if (callbackQuery.getData().equals("callback_data_2")) {
-            sendText(who, "Полученный ответ: " + Long.toString(Combinations.combinationsWithRepetition(n, k)), bot);
-        } else if (callbackQuery.getData().equals("callback_data_5")) {
-            sendText(who, "Полученный ответ: " + Long.toString(Placements.placementsWithoutRepetition(n, k)), bot);
-        } else if (callbackQuery.getData().equals("callback_data_6")) {
-            sendText(who, "Полученный ответ: " + Long.toString(Placements.placementsWithRepetition(n, k)), bot);
+        if (callbackQuery.getData().equals(callbackText(1))) {
+            sendTextWithButton(who, "Полученный ответ: " + Long.toString(Combinations.combinations(n, k)), bot,"reply");
+        } else if (callbackQuery.getData().equals(callbackText(2))) {
+            sendTextWithButton(who, "Полученный ответ: " + Long.toString(Combinations.combinationsWithRepetition(n, k)), bot,"reply");
+        } else if (callbackQuery.getData().equals(callbackText(5))) {
+            sendTextWithButton(who, "Полученный ответ: " + Long.toString(Placements.placementsWithoutRepetition(n, k)), bot,"reply");
+        } else if (callbackQuery.getData().equals(callbackText(6))) {
+            sendTextWithButton(who, "Полученный ответ: " + Long.toString(Placements.placementsWithRepetition(n, k)), bot,"reply");
+        } else {
+            sendTextWithButton(who, ERROR_MESSAGE, bot, "reply");
         }
     }
 
     private void handleThreeNumbers(int n, int m, int k) {
-        if (callbackQuery.getData().equals("callback_data_7")) {
-            sendText(who, "Полученный ответ: " + Float.toString(UrnModel.urnModelFirst(n, m, k)), bot);
-        } else {
+        if (callbackQuery.getData().equals(callbackText(7))) {
+            sendTextWithButton(who, "Полученный ответ: " + Float.toString(UrnModel.urnModelFirst(n, m, k)), bot,"reply");
+        } else if (callbackQuery.getData().equals(callbackText(4))) {
             handleMoreNumbers(n, Service.createIntArray(m, k));
+        } else {
+            sendTextWithButton(who, ERROR_MESSAGE, bot, "reply");
         }
     }
 
     private void handleFourNumbers(int n, int m, int k, int r) {
-        if (callbackQuery.getData().equals("callback_data_8")) {
-            sendText(who, "Полученный ответ: " + Float.toString(UrnModel.urnModelSecond(n, m, k, r)), bot);
-        } else {
+        if (callbackQuery.getData().equals(callbackText(8))) {
+            sendTextWithButton(who, "Полученный ответ: " + Float.toString(UrnModel.urnModelSecond(n, m, k, r)), bot,"reply");
+        } else if (callbackQuery.getData().equals(callbackText(4))) {
             handleMoreNumbers(n, Service.createIntArray(m, k, r));
+        } else {
+            sendTextWithButton(who, ERROR_MESSAGE, bot, "reply");
         }
     }
     private void handleMoreNumbers(int n, int[] numbers) {
-        System.out.println(1);
-        if (callbackQuery.getData().equals("callback_data_4")) {
-            sendText(who, "Полученный ответ: " + Float.toString(Permutations.permutationsWithRepetition(n,numbers)), bot);
+        if (callbackQuery.getData().equals(callbackText(4))) {
+            sendTextWithButton(who, "Полученный ответ: " + Float.toString(Permutations.permutationsWithRepetition(n,numbers)), bot,"reply");
         }
     }
 
-    private InlineKeyboardMarkup setKeyboardMarkup() {
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> keyboard = keyboardMarkup.getKeyboard();
 
-        if (keyboard == null) {
-            keyboard = new ArrayList<>();
-            keyboardMarkup.setKeyboard(keyboard);
-        }
-        keyboard.add(createInlineKeyboardRow("Сочетания без повторений", callbackText(1)));
-        keyboard.add(createInlineKeyboardRow("Сочетания с повторениями", callbackText(2)));
-        keyboard.add(createInlineKeyboardRow("Перестановки без повторений", callbackText(3)));
-        keyboard.add(createInlineKeyboardRow("Перестановки с повторениями", callbackText(4)));
-        keyboard.add(createInlineKeyboardRow("Размещения без повторений", callbackText(5)));
-        keyboard.add(createInlineKeyboardRow("Размещения с повторениями", callbackText(6)));
-        keyboard.add(createInlineKeyboardRow("Урновая модель первого типа", callbackText(7)));
-        keyboard.add(createInlineKeyboardRow("Урновая модель второго типа", callbackText(8)));
-        return keyboardMarkup;
-    }
-
-    private List<InlineKeyboardButton> createInlineKeyboardRow(String text, String callbackData) {
-        List<InlineKeyboardButton> row = new ArrayList<>();
-        InlineKeyboardButton button = new InlineKeyboardButton();
-        button.setText(text);
-        button.setCallbackData(callbackData);
-        row.add(button);
-        return row;
-    }
-
-    public void sendText(Long who, String what, TelegramLongPollingBot bot) {
+    public static void sendText(Long who, String what, TelegramLongPollingBot bot) {
         SendMessage sm = SendMessage.builder()
                 .chatId(who.toString())
                 .text(what).build();
