@@ -2,30 +2,32 @@ package math;
 
 import service.Service;
 
+import java.math.BigInteger;
+
 import static math.Factorial.factorial;
 
 //перестановки
 public class Permutations {
     //без повторений
-    public static long permutationsWithoutRepetition(int n) {
+    public static BigInteger permutationsWithoutRepetition(int n) {
         if (n < 0) {
-            return 0;
+            return BigInteger.ZERO;
         } else {
             return factorial(n);
         }
     }
 
-    //с повторениями
-    public static long permutationsWithRepetition(int n, int[] numbers) {
-        if (n == Service.sumArray(numbers)) {
-            long product = 1;
+    public static BigInteger permutationsWithRepetition(int n, int[] numbers) {
+        long sum = Service.sumArray(numbers);
+        if (n == sum) {
+            BigInteger product = BigInteger.ONE;
             for (int i = 0; i < numbers.length; i++) {
-                long numFact = Factorial.factorial(numbers[i]);
-                product *= numFact;
+                BigInteger numFact = factorial(numbers[i]);
+                product = product.multiply(numFact);
             }
-            return factorial(n)/product;
+            return factorial(n).divide(product);
         } else {
-            return 0;
+            return BigInteger.ZERO;
         }
     }
 }

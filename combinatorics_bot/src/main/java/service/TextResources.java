@@ -22,10 +22,11 @@ public class TextResources {
     public static final String PHOTO_URL = "https://disk.yandex.lt/i/Bsp-_Qk53VHxpA";
     public static final String BOT_NAME = "combinatorics_bot";
     public static final String ERROR_COMMAND = "Неизвестная команда";
+    public static final String BIG_NUM_ERROR = "Вы получили 0. Возможно, вы ввели что-то не в соответствие с формулой, попробуйте еще раз.";
     public static final String COMBINATIONS_WITHOUT_REP = "Сочетания без повторений. Введите n и k (n > k) через ПРОБЕЛ чтобы получить ответ.";
     public static final String COMBINATIONS_WITH_REP = "Сочетания с повторениями. Введите n и k (n > k) через ПРОБЕЛ чтобы получить ответ.";
     public static final String PERMUTATIONS_WITHOUT_REP = "Перестановки без повторений. Введите n чтобы получить ответ.";
-    public static final String PERMUTATIONS_WITH_REP = "Перестановки с повторениями. Введите общее число объектов n, и затем количество объектов каждого типа n1 ... nk через ПРОБЕЛ чтобы получить ответ.";
+    public static final String PERMUTATIONS_WITH_REP = "Перестановки с повторениями. Введите общее число объектов n, и затем количество объектов каждого типа n1 ... nk через ПРОБЕЛ чтобы получить ответ. (n = n1 + .. + nk)";
     public static final String PLACEMENTS_WITHOUT_REP = "Размещения без повторений. Введите n и k через ПРОБЕЛ чтобы получить ответ.";
     public static final String PLACEMENTS_WITH_REP = "Размещения с повторениями. Введите n и k через ПРОБЕЛ чтобы получить ответ.";
     public static final String URN_MODEL_FIRST = "Урновая модель первого типа. Введите n, m и k (n > m, m > k) через ПРОБЕЛ чтобы получить ответ.";

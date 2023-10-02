@@ -1,31 +1,31 @@
 package math;
 
+import java.math.BigInteger;
+
 import static math.Factorial.factorial;
 
 //размещения
 public class Placements {
     //без повторений
-    public static long placementsWithoutRepetition(int n, int k) {
+    public static BigInteger placementsWithoutRepetition(int n, int k) {
         if (k < 0 || k > n) {
-            return 0;
+            return BigInteger.ZERO;
         } else {
-            long numerator = factorial(n);
-            long denominator = factorial(n - k);
-            return numerator / denominator;
+            BigInteger numerator = factorial(n);
+            BigInteger denominator = factorial(n - k);
+            return numerator.divide(denominator);
         }
     }
 
-    //с повторениями
-    public static long placementsWithRepetition(int n, int k) {
+    public static BigInteger placementsWithRepetition(int n, int k) {
         if (k < 0) {
-            return 0;
+            return BigInteger.ZERO;
         } else {
-            long result = 1;
+            BigInteger result = BigInteger.ONE;
             for (int i = 0; i < k; i++) {
-                result *= n;
+                result = result.multiply(BigInteger.valueOf(n));
             }
             return result;
         }
     }
-
 }

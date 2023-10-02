@@ -13,8 +13,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import service.Service;
 
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 
@@ -48,7 +50,7 @@ public class MessageSender implements Runnable {
     public void run() {
         if (message.isCommand()) {
             handleCommandToSend(update);
-        } else if ((message.getText().matches(REGEX_FOR_ONE_NUM) || message.getText().matches(REGEX_FOR_TWO_NUM) || message.getText().matches(REGEX_FOR_THREE_NUM) || message.getText().matches(REGEX_FOR_FOUR_NUM)) && !(callbackQuery == null)) {
+        } else if ((message.getText().replace(" ","").matches(REGEX_FOR_ONE_NUM) || message.getText().matches(REGEX_FOR_TWO_NUM) || message.getText().matches(REGEX_FOR_THREE_NUM) || message.getText().matches(REGEX_FOR_FOUR_NUM)) && !(callbackQuery == null)) {
             handleMessageToSend();
         } else if (!(callbackQuery == null)) {
             sendTextWithButton(who, ERROR_MESSAGE, bot,"reply");
@@ -57,7 +59,7 @@ public class MessageSender implements Runnable {
         }
         System.out.println(Thread.currentThread().getId() + "," +
                 message.getText() + ", " +
-                message.getFrom().getUserName() + ", " + LocalTime.now());
+                message.getFrom().getUserName() + ", " + LocalTime.now()+ " " + LocalDate.now());
     }
     private void handleCommandToSend(Update update) throws MalformedURLException {
         switch (message.getText()) {
@@ -106,12 +108,11 @@ public class MessageSender implements Runnable {
     }
     private void handleMessageToSend() {
         String[] numbers = message.getText().split(" ");
-        int length = numbers.length;
-        if (length == 0) {
+        int[] intNumbers = Service.stringArrayToIntArray(numbers);
+        if (numbers.length == 0) {
             return;
         }
-        int[] intNumbers = Service.stringArrayToIntArray(numbers);
-        switch (length) {
+        switch (numbers.length) {
             case 1:
                 handleSingleNumber(intNumbers[0]);
                 break;
@@ -133,7 +134,7 @@ public class MessageSender implements Runnable {
     }
     private void handleSingleNumber(int n) {
         if (callbackQuery.getData().equals(callbackText(3))) {
-            sendTextWithButton(who, "Полученный ответ: " + Long.toString(Permutations.permutationsWithoutRepetition(n)), bot,"reply");
+            sendTextWithButton(who, "Полученный ответ: " + Permutations.permutationsWithoutRepetition(n).toString(), bot,"reply");
         } else {
             sendTextWithButton(who, ERROR_MESSAGE, bot, "reply");
         }
@@ -141,13 +142,13 @@ public class MessageSender implements Runnable {
 
     private void handleTwoNumbers(int n, int k) {
         if (callbackQuery.getData().equals(callbackText(1))) {
-            sendTextWithButton(who, "Полученный ответ: " + Long.toString(Combinations.combinations(n, k)), bot,"reply");
+            sendTextWithButton(who, "Полученный ответ: " + Combinations.combinations(n, k).toString(), bot,"reply");
         } else if (callbackQuery.getData().equals(callbackText(2))) {
-            sendTextWithButton(who, "Полученный ответ: " + Long.toString(Combinations.combinationsWithRepetition(n, k)), bot,"reply");
+            sendTextWithButton(who, "Полученный ответ: " + Combinations.combinationsWithRepetition(n, k).toString(), bot,"reply");
         } else if (callbackQuery.getData().equals(callbackText(5))) {
-            sendTextWithButton(who, "Полученный ответ: " + Long.toString(Placements.placementsWithoutRepetition(n, k)), bot,"reply");
+            sendTextWithButton(who, "Полученный ответ: " + Placements.placementsWithoutRepetition(n, k).toString(), bot,"reply");
         } else if (callbackQuery.getData().equals(callbackText(6))) {
-            sendTextWithButton(who, "Полученный ответ: " + Long.toString(Placements.placementsWithRepetition(n, k)), bot,"reply");
+            sendTextWithButton(who, "Полученный ответ: " + Placements.placementsWithRepetition(n, k).toString(), bot,"reply");
         } else {
             sendTextWithButton(who, ERROR_MESSAGE, bot, "reply");
         }
@@ -155,7 +156,7 @@ public class MessageSender implements Runnable {
 
     private void handleThreeNumbers(int n, int m, int k) {
         if (callbackQuery.getData().equals(callbackText(7))) {
-            sendTextWithButton(who, "Полученный ответ: " + Float.toString(UrnModel.urnModelFirst(n, m, k)), bot,"reply");
+            sendTextWithButton(who, "Полученный ответ: " + UrnModel.urnModelFirst(n, m, k).toString(), bot,"reply");
         } else if (callbackQuery.getData().equals(callbackText(4))) {
             handleMoreNumbers(n, Service.createIntArray(m, k));
         } else {
@@ -165,7 +166,7 @@ public class MessageSender implements Runnable {
 
     private void handleFourNumbers(int n, int m, int k, int r) {
         if (callbackQuery.getData().equals(callbackText(8))) {
-            sendTextWithButton(who, "Полученный ответ: " + Float.toString(UrnModel.urnModelSecond(n, m, k, r)), bot,"reply");
+            sendTextWithButton(who, "Полученный ответ: " + UrnModel.urnModelSecond(n, m, k, r).toString(), bot,"reply");
         } else if (callbackQuery.getData().equals(callbackText(4))) {
             handleMoreNumbers(n, Service.createIntArray(m, k, r));
         } else {
@@ -174,7 +175,11 @@ public class MessageSender implements Runnable {
     }
     private void handleMoreNumbers(int n, int[] numbers) {
         if (callbackQuery.getData().equals(callbackText(4))) {
-            sendTextWithButton(who, "Полученный ответ: " + Float.toString(Permutations.permutationsWithRepetition(n,numbers)), bot,"reply");
+            if (Permutations.permutationsWithRepetition(n,numbers).compareTo(BigInteger.ZERO) == 0) {
+                sendTextWithButton(who, BIG_NUM_ERROR, bot, "reply");
+            } else {
+                sendTextWithButton(who, "Полученный ответ: " + Permutations.permutationsWithRepetition(n,numbers).toString(), bot,"reply");
+            }
         }
     }
 

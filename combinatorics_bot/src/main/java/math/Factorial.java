@@ -1,11 +1,14 @@
 package math;
 
+import java.math.BigInteger;
+
 public class Factorial {
-    public static long factorial(int n) {
+    public static BigInteger factorial(int n) {
         if (n == 0) {
-            return 1;
+            return BigInteger.ONE;
         } else {
-            return n * factorial(n - 1);
+            BigInteger result = BigInteger.valueOf(n);
+            return result.multiply(factorial(n - 1));
         }
     }
 }

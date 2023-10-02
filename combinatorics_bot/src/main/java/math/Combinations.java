@@ -1,23 +1,31 @@
 package math;
 
+import java.math.BigInteger;
+
 import static math.Factorial.factorial;
 
 //сочетания
 public class Combinations {
     //без повторений
-    public static long combinations(int n, int k) {
+    public static BigInteger combinations(int n, int k) {
         if (k < 0 || k > n) {
-            return 0;
+            return BigInteger.ZERO;
         } else {
-            return factorial(n) / (factorial(k) * factorial(n - k));
+            BigInteger numerator = factorial(n);
+            BigInteger denominator = factorial(k).multiply(factorial(n - k));
+            return numerator.divide(denominator);
         }
     }
-    //с повторениями
-    public static long combinationsWithRepetition(int n, int k) {
+
+    public static BigInteger combinationsWithRepetition(int n, int k) {
         if (k < 0 || n < 0) {
-            return 0;
+            return BigInteger.ZERO;
         } else {
-            return factorial(n + k - 1) / (factorial(k) * factorial(n - 1));
+            BigInteger numerator = factorial(n + k - 1);
+            BigInteger denominator = factorial(k).multiply(factorial(n - 1));
+            return numerator.divide(denominator);
         }
     }
+
+
 }
