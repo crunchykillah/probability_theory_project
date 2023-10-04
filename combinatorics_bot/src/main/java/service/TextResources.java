@@ -36,6 +36,7 @@ public class TextResources {
     public static final String REGEX_FOR_THREE_NUM = "^\\d+(\\s\\d+){2}$";
     public static final String REGEX_FOR_FOUR_NUM = "^\\d+\\s\\d+\\s\\d+\\s\\d+$";
     public static final String REPLY_FORMULAS = "Выберите формулу:";
+    public static final String BIG_PROBABILITY_ERROR = "Вы получили вероятность больше 1. Проверьте правильность вводимых данных";
 
     //метод создания data для callback
     public static String callbackText(int num) {

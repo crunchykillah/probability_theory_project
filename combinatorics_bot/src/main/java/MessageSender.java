@@ -13,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import service.Service;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -156,7 +157,11 @@ public class MessageSender implements Runnable {
 
     private void handleThreeNumbers(int n, int m, int k) {
         if (callbackQuery.getData().equals(callbackText(7))) {
-            sendTextWithButton(who, "Полученный ответ: " + UrnModel.urnModelFirst(n, m, k).toString(), bot,"reply");
+            if(UrnModel.urnModelFirst(n, m, k).compareTo(BigDecimal.ZERO) == 0) {
+                sendTextWithButton(who, BIG_PROBABILITY_ERROR, bot, "reply");
+            } else {
+                sendTextWithButton(who, "Полученный ответ: " + UrnModel.urnModelFirst(n, m, k).toString(), bot,"reply");
+            }
         } else if (callbackQuery.getData().equals(callbackText(4))) {
             handleMoreNumbers(n, Service.createIntArray(m, k));
         } else {
@@ -166,7 +171,11 @@ public class MessageSender implements Runnable {
 
     private void handleFourNumbers(int n, int m, int k, int r) {
         if (callbackQuery.getData().equals(callbackText(8))) {
-            sendTextWithButton(who, "Полученный ответ: " + UrnModel.urnModelSecond(n, m, k, r).toString(), bot,"reply");
+            if (UrnModel.urnModelSecond(n, m, k, r).compareTo(BigDecimal.ZERO) == 0) {
+                sendTextWithButton(who, BIG_PROBABILITY_ERROR, bot, "reply");
+            } else {
+                sendTextWithButton(who, "Полученный ответ: " + UrnModel.urnModelSecond(n, m, k, r).toString(), bot,"reply");
+            }
         } else if (callbackQuery.getData().equals(callbackText(4))) {
             handleMoreNumbers(n, Service.createIntArray(m, k, r));
         } else {
